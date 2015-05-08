@@ -1,6 +1,4 @@
-package server2;
-
-import static org.junit.Assert.*;
+package v4;
 
 /**
  * Created by Mojtaba on 5/8/2015.
