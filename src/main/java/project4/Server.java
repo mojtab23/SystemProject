@@ -1,4 +1,4 @@
-package v4;
+package project4;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -8,11 +8,13 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.RejectedExecutionHandler;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Created by Mojtaba on 4/9/2015.
  */
-public class Server2 {
+public class Server {
 
     public static final int MAX_TASK = 10;
     public static final String ERROR_503 =
@@ -33,11 +35,14 @@ public class Server2 {
                     "</body>\n" +
                     "\n" +
                     "</html>";
+    private static final Lock WRITER_LOCK = new ReentrantLock();
+    private static final Lock READER_LOCK = new ReentrantLock();
+    private static int readerNO = 0;
     private final ServerThreadPoolExecutor executor;
     private int port;
     private volatile double charge = 0;
 
-    public Server2(int port) {
+    public Server(int port) {
         this.port = port;
 
         BlockingQueue<Runnable> blockingQueue = new ArrayBlockingQueue<>(2);
@@ -66,14 +71,29 @@ public class Server2 {
     }
 
     public double getCharge() {
-        return charge;
+        READER_LOCK.lock();
+        readerNO++;
+        if (readerNO == 1) WRITER_LOCK.lock();
+        READER_LOCK.unlock();
+
+        double temp = charge;
+
+        READER_LOCK.lock();
+        readerNO--;
+        if (readerNO == 0) WRITER_LOCK.unlock();
+        READER_LOCK.unlock();
+
+        return temp;
+
+
     }
 //    private ServerSocket serverSocket;
 
     public void setCharge(double charge) {
-        synchronized (this.getClass()) {
-            this.charge = charge;
-        }
+        WRITER_LOCK.lock();
+        this.charge = charge;
+        WRITER_LOCK.unlock();
+
     }
 
     private void acceptRequest() {

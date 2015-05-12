@@ -1,4 +1,4 @@
-package v4;
+package project4;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -31,10 +31,10 @@ public class CalculatorTask2 implements Runnable {
     public static final long DEAD_LOCK = 3000;//3 Seconds.
     private final long initTime;
     private Socket connection;
-    private Server2 server;
+    private Server server;
 
 
-    public CalculatorTask2(Socket connection, Server2 server, long initTime) {
+    public CalculatorTask2(Socket connection, Server server, long initTime) {
         this.connection = connection;
         this.server = server;
         this.initTime = initTime;

@@ -1,13 +1,13 @@
-package v4;
+package project4;
 
 /**
  * Created by Mojtaba on 5/8/2015.
  */
-public class Server2Test {
+public class ServerTest {
 
     public static void main(String[] args) {
 
-        Server2 server = new Server2(10000);
+        Server server = new Server(10000);
 
     }
 
